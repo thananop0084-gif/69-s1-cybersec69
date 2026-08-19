@@ -1,0 +1,36 @@
+﻿services:
+  db:
+    image: postgres:16-alpine
+    container_name: 69-s2-db
+    ports:
+      - "54327:5432"
+    environment:
+      POSTGRES_USER: thananop
+      POSTGRES_PASSWORD: Phungdokmai789
+      POSTGRES_DB: thananop
+    volumes:
+      - ./data/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thananop -d thananop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ... (ส่วนของ admin)
+
+  app:
+    image: prawee/strapi
+    container_name: 69-s2-app
+    ports:
+      - "9092:1337"
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: thananop
+      DATABASE_USERNAME: thananop
+      DATABASE_PASSWORD: Phungdokmai789
+      DATABASE_SSL: "false"
+    depends_on:
+      db:
+        condition: service_healthy 
