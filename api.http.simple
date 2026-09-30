@@ -1,0 +1,210 @@
+# API
+
+## 1.Admin
+
+### 1.1 Login
+POST http://localhost:9092/admin/login
+Content-Type: application/json
+
+{
+    "email": "{{$dotenv ADMIN_EMAIL}}",
+    "password": "{{$dotenv ADMIN_PASSWORD}}",
+    "rememberMe": false
+}
+
+### 1.2 Signup
+// ใช้ได้เฉพาะตอนที่ยังไม่มี Super Admin (ครั้งแรกหลัง setup เท่านั้น)
+POST http://localhost:9092/admin/register-admin
+Content-Type: application/json
+Authorization: Bearer {{$dotenv ADMIN_TOKEN}}
+
+{
+    "firstname": "Admin",
+    "lastname": "Test",
+    "email": "<admin-email>",
+    "password": "<new-password>"
+}
+
+### 1.3 Forgot Password
+POST http://localhost:9092/admin/forgot-password
+Content-Type: application/json
+
+{
+    "email": "{{$dotenv ADMIN_EMAIL}}"
+}
+
+### 1.3.1 Reset Password
+// เอา token (query param ชื่อ code) จากลิงก์ในอีเมลที่ 1.3 ส่งกลับไปใส่ใน field resetPasswordToken
+POST http://localhost:9092/admin/reset-password
+Content-Type: application/json
+
+{
+    "resetPasswordToken": "<token-from-email>",
+    "password": "<new-password>"
+}
+
+### 1.4 Profile
+// เอา token จาก response ของข้อ 1.1 ไปใส่ใน Authorization
+GET http://localhost:9092/admin/users/me
+Authorization: Bearer {{$dotenv ADMIN_TOKEN}}
+
+## 2.User
+
+### 2.1 Login
+POST http://localhost:9092/api/auth/local
+Content-Type: application/json
+
+{
+    "identifier": "<user-email>",
+    "password": "<user-password>"
+}
+
+### 2.2 Signup
+POST http://localhost:9092/api/auth/local/register
+Content-Type: application/json
+
+{
+    "username": "user123",
+    "email": "<user-email>",
+    "password": "<new-password>"
+}
+
+### 2.3 Forgot Password
+
+POST http://localhost:9092/api/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": "<user-email>"
+}
+
+### 2.3.1 Reset Password
+// เอา code จากลิงก์ในอีเมลที่ 2.3 ส่งกลับไปใส่ใน field code
+POST http://localhost:9092/api/auth/reset-password
+Content-Type: application/json
+
+{
+    "code": "<code-from-email>",
+    "password": "<new-password>",
+    "passwordConfirmation": "<new-password>"
+}
+
+### 2.4 Profile
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET http://localhost:9092/api/users/me
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+## 3.Content
+
+### 3.1 Student
+
+### 3.1.1 Create
+// เอา token จาก response ของข้อ 1.1 หรือ 2.1 ไปใส่ใน Authorization
+POST http://localhost:9092/api/students
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "<NAME  SURNAME>",
+        "mobile": "<PHONENUMBER>",
+        "cardId": "<CARDID10>"
+    }
+}
+
+### 3.1.2 List All
+GET http://localhost:9092/api/students
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.1.3 List with ID
+GET http://localhost:9092/api/students/3
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.1.4 Update
+PUT http://localhost:9092/api/students/3
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "AAAA BBBB Updated",
+        "mobile": "0234448888",
+        "cardId": "0234448888111"
+    }
+}
+
+### 3.1.5 Delete
+DELETE http://localhost:9092/api/students/3
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.2 Subject
+
+### 3.2.1 Create
+POST http://localhost:9092/api/subjects
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "<Subject>"
+    }
+}
+
+### 3.2.2 List All
+GET http://localhost:9092/api/subjects
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.2.3 List with ID
+GET http://localhost:9092/api/subjects/:id
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.2.4 Update
+PUT http://localhost:9092/api/subjects/:id
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "<subject-name>"
+    }
+}
+
+### 3.2.5 Delete
+DELETE http://localhost:9092/api/subjects/:id
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.3 Teacher
+
+### 3.3.1 Create
+POST http://localhost:9092/api/teachers
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "<teacher-name>"
+    }
+}
+
+### 3.3.2 List All
+GET http://localhost:9092/api/teachers
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.3.3 List with ID
+GET http://localhost:9092/api/teachers/:id
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+### 3.3.4 Update
+PUT http://localhost:9092/api/teachers/:id
+Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+{
+    "data": {
+        "name": "<teacher-name>"
+    }
+}
+
+### 3.3.5 Delete
+DELETE http://localhost:9092/api/teachers/:id
+Authorization: Bearer {{$dotenv USER_TOKEN}}
